@@ -1,88 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speech to tech</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" />
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    main {
-      display: flex;
-      justify-content: center;
-      margin: 30px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      max-width: 600px;
-      width: 100%;
-    }
-
-    #status {
-      display: none;
-    }
-  </style>
-</head>
-
-<body>
-  <main>
-    <form>
-      <label for="title">
-        <h4>Notas de voz</h4>
-        <textarea name="text_recognition" id="input" cols="30" rows="10"></textarea>
-        <span id="status">Escuchando...</span>
-      </label>
-      <button name="button" id="button_grabar">Transcribir nota de voz a texto...</button>
-    </form>
-  </main>
-  <script>
-    const text = document.getElementById('input')
-    const button = document.getElementById('button_grabar')
-    const info = document.getElementById('status')
-
-    let isRecording = false
-
-
-    const recognition = new webkitSpeechRecognition();
-    recognition.lang = 'es-ES';
-    recognition.continuous = true;
-
-    recognition.onresult = (event) => {
-      let resultText = ''
-      for (const result of event.results) {
-        resultText = result[0].transcript;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speech to tech</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
       }
-      text.value += resultText
-    };
 
-    const iniciarGrabacion = (event) => {
-      event.preventDefault()
-      //cambiamos el contido del boton
-      if (!isRecording) {
-        button.textContent = 'Detener...'
-        info.style.display = 'block'
-        recognition.start()
-        isRecording = true
-      } else {
-        recognition.stop()
-        button.textContent = 'Grabar nota de voz'
-        info.style.display = 'none'
-        isRecording = false
+      main {
+        display: flex;
+        justify-content: center;
+        margin: 30px;
       }
-    }
 
-    button.addEventListener('click', iniciarGrabacion)
+      form {
+        display: flex;
+        flex-direction: column;
+        max-width: 600px;
+        width: 100%;
+      }
 
+      #status {
+        display: none;
+      }
+    </style>
+  </head>
 
-  </script>
-</body>
+  <body>
+    <main>
+      <form>
+        <label>
+          <h4>Notas de texto</h4>
+          <textarea
+            name="text_recognition"
+            id="input"
+            cols="30"
+            rows="10"
+          ></textarea>
+          <span id="status">Escuchando...</span>
+        </label>
+        <button name="button" id="button_grabar" type="submit">
+          Transcribir voz a texto.
+        </button>
+      </form>
+    </main>
+    <script>
+      const text = document.getElementById("input");
+      const button = document.getElementById("button_grabar");
+      const info = document.getElementById("status");
 
+      let isRecording = false;
+
+      const recognition = new webkitSpeechRecognition();
+      recognition.lang = "es-ES";
+      recognition.continuous = true;
+      recognition.iterimResult = false;
+
+      recognition.onresult = (event) => {
+        let resultText = "";
+        for (const result of event.results) {
+          resultText = result[0].transcript;
+        }
+        text.value += resultText;
+      };
+
+      recognition.onerror = (event) => {
+        alert(`Speech recognition error detected: ${event.error}`);
+        alert(`Additional information: ${event.message}`);
+      };
+
+      const iniciarGrabacion = (event) => {
+        event.preventDefault();
+        //cambiamos el contido del boton
+        if (!isRecording) {
+          button.textContent = "Detener...";
+          info.style.display = "block";
+          recognition.start();
+          isRecording = true;
+        } else {
+          recognition.stop();
+          button.textContent = "Grabar nota de voz";
+          info.style.display = "none";
+          isRecording = false;
+        }
+      };
+
+      button.addEventListener("click", iniciarGrabacion);
+      addEventListener("submit", (event) => {
+        event.preventDefault();
+      });
+    </script>
+  </body>
 </html>
