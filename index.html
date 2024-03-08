@@ -62,14 +62,22 @@
       const recognition = new webkitSpeechRecognition();
       recognition.lang = "es-ES";
       recognition.continuous = true;
-      recognition.iterimResult = false;
+      recognition.interimResults = true;
 
       recognition.onresult = (event) => {
-        let resultText = "";
+        let tempValueFinal = ""
+        let interimResults = "";
+
+        tempValueFinal = text.value;
+        
         for (const result of event.results) {
-          resultText = result[0].transcript;
+          for(const itResult of result) {
+            interimResults += itResult.transcript;
+          }
         }
-        text.value += resultText;
+
+        text.value = interimResults;
+        tempValueFinal = text.value;
       };
 
       recognition.onerror = (event) => {
